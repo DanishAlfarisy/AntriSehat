@@ -54,7 +54,6 @@ class AdminDoctorController extends Controller
             'specialization' => ['required', 'string', 'max:255'],
             'str_number' => ['nullable', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
-            'photo' => ['nullable', 'string', 'max:255'],
             'consultation_fee' => ['required', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ]);
