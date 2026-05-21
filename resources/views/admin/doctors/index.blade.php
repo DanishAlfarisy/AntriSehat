@@ -1,0 +1,6 @@
+@extends('layouts.app')
+@section('title', 'Kelola Dokter')
+@section('content')
+<div class="flex items-center justify-between mb-6"><h1 class="text-3xl font-bold">Kelola Dokter</h1><a href="{{ route('admin.doctors.create') }}" class="rounded-lg bg-emerald-600 px-4 py-2 text-white">Tambah Dokter</a></div>
+<div class="bg-white rounded-2xl shadow overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-left">Nama</th><th class="p-3 text-left">Spesialisasi</th><th class="p-3 text-left">Biaya</th><th class="p-3 text-left">Status</th><th class="p-3"></th></tr></thead><tbody>@foreach($doctors as $doctor)<tr class="border-t"><td class="p-3">{{ $doctor->name }}</td><td class="p-3">{{ $doctor->specialization }}</td><td class="p-3">Rp{{ number_format($doctor->consultation_fee,0,',','.') }}</td><td class="p-3">{{ $doctor->is_active ? 'Aktif' : 'Nonaktif' }}</td><td class="p-3"><div class="flex gap-2"><a class="rounded bg-blue-600 px-3 py-1 text-white" href="{{ route('admin.doctors.edit',$doctor) }}">Edit</a><form method="POST" action="{{ route('admin.doctors.destroy',$doctor) }}" onsubmit="return confirm('Hapus dokter?')">@csrf @method('DELETE')<button class="rounded bg-red-500 px-3 py-1 text-white">Hapus</button></form></div></td></tr>@endforeach</tbody></table></div>
+@endsection

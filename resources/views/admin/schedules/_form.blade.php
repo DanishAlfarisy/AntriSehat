@@ -1,0 +1,7 @@
+<div class="grid md:grid-cols-2 gap-4">
+<div><label class="font-medium">Dokter</label><select name="doctor_id" class="mt-1 w-full rounded-lg border-slate-300" required>@foreach($doctors as $doctor)<option value="{{ $doctor->id }}" @selected(old('doctor_id', $schedule->doctor_id ?? '') == $doctor->id)>{{ $doctor->name }}</option>@endforeach</select></div>
+<div><label class="font-medium">Hari</label><select name="day" class="mt-1 w-full rounded-lg border-slate-300" required>@foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'] as $day)<option value="{{ $day }}" @selected(old('day', $schedule->day ?? '') == $day)>{{ $day }}</option>@endforeach</select></div>
+<div><label class="font-medium">Jam Mulai</label><input name="start_time" type="time" value="{{ old('start_time', isset($schedule) ? substr($schedule->start_time,0,5) : '') }}" class="mt-1 w-full rounded-lg border-slate-300" required></div>
+<div><label class="font-medium">Jam Selesai</label><input name="end_time" type="time" value="{{ old('end_time', isset($schedule) ? substr($schedule->end_time,0,5) : '') }}" class="mt-1 w-full rounded-lg border-slate-300" required></div>
+<div><label class="font-medium">Kuota</label><input name="quota" type="number" min="1" value="{{ old('quota', $schedule->quota ?? 1) }}" class="mt-1 w-full rounded-lg border-slate-300" required></div>
+</div><button class="mt-5 rounded-lg bg-emerald-600 px-4 py-2 text-white">Simpan</button>

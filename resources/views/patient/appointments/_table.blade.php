@@ -1,0 +1,6 @@
+<div class="bg-white rounded-2xl shadow overflow-x-auto">
+<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-3 text-left">Tanggal</th><th class="p-3 text-left">Dokter</th><th class="p-3 text-left">Jadwal</th><th class="p-3 text-left">No.</th><th class="p-3 text-left">Status</th><th class="p-3"></th></tr></thead><tbody>
+@forelse($appointments as $appointment)
+<tr class="border-t"><td class="p-3">{{ $appointment->appointment_date }}</td><td class="p-3">{{ $appointment->doctorSchedule->doctor->name }}</td><td class="p-3">{{ $appointment->doctorSchedule->day }} {{ substr($appointment->doctorSchedule->start_time,0,5) }}</td><td class="p-3 font-bold">{{ $appointment->queue_number }}</td><td class="p-3"><x-status-badge :status="$appointment->status" /></td><td class="p-3 text-right">@if($appointment->status === 'pending')<form method="POST" action="{{ route('appointments.cancel', $appointment) }}" onsubmit="return confirm('Batalkan appointment?')">@csrf<button class="rounded-lg bg-red-500 px-3 py-2 text-white">Batalkan</button></form>@endif</td></tr>
+@empty<tr><td colspan="6" class="p-4 text-center text-slate-500">Belum ada appointment.</td></tr>@endforelse
+</tbody></table></div>
