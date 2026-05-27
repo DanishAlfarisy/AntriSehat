@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Doctor;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminDoctorController extends Controller
@@ -23,7 +24,15 @@ class AdminDoctorController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        Doctor::create($this->validated($request));
+        $data = $this->validated($request);
+
+        if (!empty($data['cropped_photo'])) {
+            $data['photo'] = $this->saveCroppedPhoto($data['cropped_photo']);
+        }
+
+        unset($data['cropped_photo']);
+
+        Doctor::create($data);
 
         return redirect()->route('admin.doctors.index')->with('success', 'Data dokter berhasil ditambahkan.');
     }
@@ -35,16 +44,45 @@ class AdminDoctorController extends Controller
 
     public function update(Request $request, Doctor $doctor): RedirectResponse
     {
-        $doctor->update($this->validated($request));
+        $data = $this->validated($request);
+
+        if (!empty($data['cropped_photo'])) {
+            if ($doctor->photo) {
+                Storage::disk('public')->delete($doctor->photo);
+            }
+
+            $data['photo'] = $this->saveCroppedPhoto($data['cropped_photo']);
+        }
+
+        unset($data['cropped_photo']);
+
+        $doctor->update($data);
 
         return redirect()->route('admin.doctors.index')->with('success', 'Data dokter berhasil diperbarui.');
     }
 
     public function destroy(Doctor $doctor): RedirectResponse
     {
+        if ($doctor->photo) {
+            Storage::disk('public')->delete($doctor->photo);
+        }
+
         $doctor->delete();
 
         return redirect()->route('admin.doctors.index')->with('success', 'Data dokter berhasil dihapus.');
+    }
+
+    private function saveCroppedPhoto(string $base64Image): string
+    {
+        $image = preg_replace('/^data:image\/\w+;base64,/', '', $base64Image);
+        $image = str_replace(' ', '+', $image);
+
+        $fileName = 'doctor_' . time() . '_' . uniqid() . '.jpg';
+        $path = 'doctors/' . $fileName;
+
+        Storage::disk('public')->put($path, base64_decode($image));
+
+        return $path;
     }
 
     private function validated(Request $request): array
@@ -54,6 +92,7 @@ class AdminDoctorController extends Controller
             'specialization' => ['required', 'string', 'max:255'],
             'str_number' => ['nullable', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'cropped_photo' => ['nullable', 'string'],
             'consultation_fee' => ['required', 'integer', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
         ]);

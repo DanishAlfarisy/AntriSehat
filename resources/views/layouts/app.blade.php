@@ -25,8 +25,21 @@
                     <span class="text-slate-500">{{ auth()->user()->name }}</span>
                     <form method="POST" action="{{ route('logout') }}">@csrf<button class="px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">Logout</button></form>
                 @else
-                    <a class="hover:text-emerald-600" href="{{ route('login') }}">Login</a>
-                    <a class="px-3 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700" href="{{ route('register') }}">Register</a>
+                   @if (request()->routeIs('register'))
+                        <a class="px-3 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700" href="{{ route('login') }}">
+                            Login
+                        </a>
+                        <a class="hover:text-emerald-600" href="{{ route('register') }}">
+                            Register
+                        </a>
+                    @else
+                        <a class="hover:text-emerald-600" href="{{ route('login') }}">
+                            Login
+                        </a>
+                        <a class="px-3 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700" href="{{ route('register') }}">
+                            Register
+                        </a>
+                    @endif               
                 @endauth
             </div>
         </div>
@@ -40,5 +53,6 @@
         @endif
         @yield('content')
     </main>
+    @stack('scripts')
 </body>
 </html>
